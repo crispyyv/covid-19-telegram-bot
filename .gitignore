@@ -1,7 +1,10 @@
-node_modules/
+.idea
+.vscode
+
+node_modules
 
 .covid_test_rc
 
 package-lock.json
 tsconfig.json
-dist/
+dist
