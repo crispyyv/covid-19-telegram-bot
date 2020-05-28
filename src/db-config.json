@@ -1,0 +1,6 @@
+{
+  "host": "localhost",
+  "port": 5432,
+  "database": "tg-bot-test",
+  "user": "vladyslav"
+}
