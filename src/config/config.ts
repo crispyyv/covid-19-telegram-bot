@@ -52,3 +52,56 @@ export function getConfig(name: string): ConfigT {
 
   return { bot_section: config.bot_section, db_section: dbConfig };
 }
+
+abstract class AConfig {
+  constructor(
+    protected fileName: string,
+    protected futureNumber: string,
+    protected dbConfig: InitialDBT
+  ) {}
+
+  abstract toNumber(futureNumber: string): number;
+
+  abstract parseDBconfig(dbConfig: InitialDBT): {};
+
+  abstract getConfig(fileName: string): ConfigT;
+}
+
+export class Config extends AConfig {
+  constructor(fileName: string, futureNumber: string, dbConfig: InitialDBT) {
+    super(fileName, futureNumber, dbConfig);
+  }
+
+  public toNumber(futureNumber: string): number {
+    let _number;
+  try {
+    _number = Number.parseInt(this.futureNumber);
+  } catch (err) {
+    throw err;
+  } finally {
+    if (_number !== undefined && Number.isNaN(_number)) {
+      throw new Error(
+        `Cant convert ${this.futureNumber} to Integer/Number. Result is ${_number}`
+      );
+    }
+  }
+  return _number;
+  }
+  public parseDBconfig(dbConfig: InitialDBT) {
+    const port = this.toNumber(this.dbConfig.port);
+  return {
+    ...this.dbConfig,
+    port,
+  };
+  }
+  public getConfig(fileName: string): ConfigT {
+    const config = rc(this.fileName);
+    if (!config) {
+      throw new Error(`Config by name ${name} not found`);
+    }
+
+    const dbConfig = this.parseDBconfig(config.db_section);
+
+    return { bot_section: config.bot_section, db_section: dbConfig };
+  }
+}
