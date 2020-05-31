@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/bot/bot.js",
+    "test": "jest",
+    "start": "node dist/app.js",
     "build": "gulp",
     "dev": "gulp dev"
   },
@@ -13,19 +13,24 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/node-fetch": "^2.5.7",
+    "node-fetch": "^2.6.0",
     "pg": "^8.2.1",
     "pg-promise": "^10.5.6",
     "rc": "^1.2.8",
     "telegraf": "^3.38.0"
   },
   "devDependencies": {
+    "@types/jest": "^25.2.3",
     "@types/rc": "^1.1.0",
     "del": "^5.1.0",
     "gulp": "^4.0.2",
     "gulp-nodemon": "^2.5.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-typescript": "^6.0.0-alpha.1",
+    "jest": "^26.0.1",
     "prettier": "^2.0.5",
+    "ts-jest": "^26.0.0",
     "typescript": "^3.9.3"
   }
 }

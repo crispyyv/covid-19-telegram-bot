@@ -18,83 +18,47 @@ export type ConfigT = {
   };
   db_section: DBConfigT;
 };
-function toNumber(futureNumber: string): number {
-  let _number;
-  try {
-    _number = Number.parseInt(futureNumber);
-  } catch (err) {
-    throw err;
-  } finally {
-    if (_number !== undefined && Number.isNaN(_number)) {
-      throw new Error(
-        `Cant convert ${futureNumber} to Integer/Number. Result is ${_number}`
-      );
-    }
-  }
-  return _number;
-}
-
-function parseDBconfig(dbConfig: InitialDBT) {
-  const port = toNumber(dbConfig.port);
-  return {
-    ...dbConfig,
-    port,
-  };
-}
-
-export function getConfig(name: string): ConfigT {
-  const config = rc(name);
-  if (!config) {
-    throw new Error(`Config by name ${name} not found`);
-  }
-
-  const dbConfig = parseDBconfig(config.db_section);
-
-  return { bot_section: config.bot_section, db_section: dbConfig };
-}
 
 abstract class AConfig {
-  constructor(
-    protected fileName: string,
-    protected futureNumber: string,
-    protected dbConfig: InitialDBT
-  ) {}
+  constructor(protected fileName: string) {}
 
-  abstract toNumber(futureNumber: string): number;
+  // abstract toNumber(futureNumber: string): number;
 
-  abstract parseDBconfig(dbConfig: InitialDBT): {};
+  // abstract parseDBconfig(dbConfig: InitialDBT): DBConfigT;
 
-  abstract getConfig(fileName: string): ConfigT;
+  // abstract getConfig(): ConfigT;
+
+  abstract createConfig(): ConfigT;
 }
 
 export class Config extends AConfig {
-  constructor(fileName: string, futureNumber: string, dbConfig: InitialDBT) {
-    super(fileName, futureNumber, dbConfig);
+  constructor(fileName: string) {
+    super(fileName);
   }
 
-  public toNumber(futureNumber: string): number {
+  private toNumber(futureNumber: string): number {
     let _number;
-  try {
-    _number = Number.parseInt(this.futureNumber);
-  } catch (err) {
-    throw err;
-  } finally {
-    if (_number !== undefined && Number.isNaN(_number)) {
-      throw new Error(
-        `Cant convert ${this.futureNumber} to Integer/Number. Result is ${_number}`
-      );
+    try {
+      _number = Number.parseInt(futureNumber);
+    } catch (err) {
+      throw err;
+    } finally {
+      if (_number !== undefined && Number.isNaN(_number)) {
+        throw new Error(
+          `Cant convert ${futureNumber} to Integer/Number. Result is ${_number}`
+        );
+      }
     }
+    return _number;
   }
-  return _number;
+  private parseDBconfig(dbConfig: InitialDBT): DBConfigT {
+    const port = this.toNumber(dbConfig.port);
+    return {
+      ...dbConfig,
+      port,
+    };
   }
-  public parseDBconfig(dbConfig: InitialDBT) {
-    const port = this.toNumber(this.dbConfig.port);
-  return {
-    ...this.dbConfig,
-    port,
-  };
-  }
-  public getConfig(fileName: string): ConfigT {
+  private getConfig(): ConfigT {
     const config = rc(this.fileName);
     if (!config) {
       throw new Error(`Config by name ${name} not found`);
@@ -103,5 +67,9 @@ export class Config extends AConfig {
     const dbConfig = this.parseDBconfig(config.db_section);
 
     return { bot_section: config.bot_section, db_section: dbConfig };
+  }
+  public createConfig(): ConfigT {
+    const config = this.getConfig();
+    return config;
   }
 }

@@ -1,6 +1,5 @@
 const pgPromise = require("pg-promise"); // pg-promise core library
 import { IInitOptions, IDatabase, IMain } from "pg-promise";
-
 import { IExtensions, UsersRepository } from "./repos";
 import {
   IConnectionParameters,
@@ -16,6 +15,7 @@ export type PgDBT = {
 interface IDb {
   createPgDB(): PgDBT;
   initializePgDB(dbApp: PgDBT): void;
+  destroyPgDB(dbApp: PgDBT): void;
 }
 
 export class Database implements IDb {
@@ -38,5 +38,9 @@ export class Database implements IDb {
   }
   async initializePgDB(dbApp: PgDBT) {
     await dbApp.db.users.create();
+  }
+
+  destroyPgDB(dbApp: PgDBT) {
+    return dbApp.pgp.end();
   }
 }
