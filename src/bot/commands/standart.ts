@@ -31,9 +31,11 @@ export class StandartCommands extends Commands {
     const { from, chat } = ctx;
     if (from && chat) {
       ctx.reply(`
-${super.getCmdStr(BotCommandEnum.help)}
-${super.getCmdStr(BotCommandEnum.settings)}
-${super.getCmdStr(BotCommandEnum.start)}
+${super.getCmdStr(BotCommandEnum.help)} - all comands
+${super.getCmdStr(BotCommandEnum.settings)} - chat info
+${super.getCmdStr(BotCommandEnum.start)} - registration
+${super.getCmdStr(BotCommandEnum.country)} - list of aviable country(extended all time)
+
 `);
     }
   }

@@ -7,6 +7,6 @@ export class FooError extends Error {
   }
 
   get throwError() {
-    return this.message;
+   return console.error(new FooError(this.message));
   }
 }

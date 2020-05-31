@@ -2,7 +2,7 @@ import { TlgfCtxT } from "..";
 import { BotCommandEnum, Commands } from "./commands";
 import { Markup, Extra } from "telegraf";
 import fetch from "node-fetch";
-
+//TODO add SCENES
 export interface IcountryData {
   Country: String;
   CountryCode: String;
@@ -32,8 +32,14 @@ export class CustomCommands extends Commands {
 
   async useCountry(ctx: TlgfCtxT, country: string) {
     let info = await this.fetchData(country);
+    const { NewConfirmed, TotalConfirmed, NewDeaths, TotalDeaths} = info
     console.log(info);
-    ctx.reply(`Info for you'r country: ${JSON.parse(info)}`);
+    ctx.reply(`Info for you'r country\n
+New confirmed: ${NewConfirmed}
+Total confirmed: ${TotalConfirmed}
+New death: ${NewDeaths}
+Total death: ${TotalDeaths}    
+    `);
   }
 
   private async fetchData(countryName: string) {
