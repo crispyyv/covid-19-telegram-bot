@@ -1,11 +1,14 @@
-import { CustomCommands } from "./commands/custom";
-import { UserStatsEnum } from "./../db/models/userModels";
-import Telegraf, { Context } from "telegraf";
+import Telegraf from "telegraf";
+import { Context, session, Stage } from "telegraf";
 import { ConfigT } from "../config";
 import { DBT } from "../db";
 import { TelegrafContext } from "telegraf/typings/context";
 import { StandartCommands } from "./commands";
 import { BotCommandEnum } from "./commands/commands";
+import { Scenes } from "./scenes";
+import { SceneContextMessageUpdate, BaseScene } from "telegraf/typings/stage";
+
+const { enter, leave } = Stage;
 
 export type TlgfCtxT = Context & {
   db: DBT;
@@ -16,22 +19,26 @@ interface IBot {
   dataBase: DBT;
   config: ConfigT;
   commands: StandartCommands;
-  custCommands: CustomCommands;
 }
 
 export class InittializeBot implements IBot {
+  stage: Stage<SceneContextMessageUpdate>;
+  country: BaseScene<SceneContextMessageUpdate>;
   constructor(dataBase: DBT, config: ConfigT) {
     this.bot = new Telegraf(config.bot_section.bot_token);
+
     this.commands = new StandartCommands();
-    this.custCommands = new CustomCommands();
+    this.scenes = new Scenes();
     this.dataBase = dataBase;
     this.config = config;
+    this.country = this.scenes.countryScene();
+    this.stage = new Stage([this.country]);
   }
   bot: Telegraf<TelegrafContext>;
   dataBase: DBT;
   config: ConfigT;
   commands: StandartCommands;
-  custCommands: CustomCommands;
+  scenes: Scenes;
 
   private help() {
     this.bot.command(
@@ -47,19 +54,12 @@ export class InittializeBot implements IBot {
     );
   }
 
-  private fetch() {
-    this.bot.command(
-      this.commands.getCmdStr(BotCommandEnum.country),
-      <any>this.custCommands.countries
-    );
-  }
-
-  private ukraine() {
-    this.bot.action("ukraine", (ctx) => {
-      const newCtx = <TlgfCtxT>ctx;
-      return this.custCommands.useCountry(newCtx, "ukraine");
-    });
-  }
+  // private fetch() {
+  //   this.bot.command(
+  //     this.commands.getCmdStr(BotCommandEnum.country),
+  //     <any>this.custCommands.countries
+  //   );
+  // }
 
   start() {
     this.bot.use((ctx, next) => {
@@ -67,14 +67,22 @@ export class InittializeBot implements IBot {
       newCtx.db = this.dataBase;
       return next && next();
     });
+
+    this.bot.use(session());
+    //@ts-ignore-start
+    this.bot.use(this.stage.middleware());
+    //@ts-ignore-end
     this.bot.command(
       this.commands.getCmdStr(BotCommandEnum.start),
       <any>this.commands.startHandler
     );
+    this.bot.command("country", async (ctx) => {
+      //@ts-ignore-start
+      ctx.scene.enter("country");
+      //@ts-ignore-end
+    });
     this.help();
     this.settings();
-    this.fetch();
-    this.ukraine();
     this.bot.launch();
   }
 
