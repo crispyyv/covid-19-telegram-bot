@@ -54,6 +54,9 @@ Total death: ${TotalDeaths}
     });
     country.on("message", (ctx: TelegrafContext) => {
       ctx.reply("It's dont look like as text");
+      //@ts-ignore-start
+      ctx.scene.leave();
+      //@ts-ignore-end
     });
 
     return country;

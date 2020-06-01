@@ -54,13 +54,6 @@ export class InittializeBot implements IBot {
     );
   }
 
-  // private fetch() {
-  //   this.bot.command(
-  //     this.commands.getCmdStr(BotCommandEnum.country),
-  //     <any>this.custCommands.countries
-  //   );
-  // }
-
   start() {
     this.bot.use((ctx, next) => {
       const newCtx = <TlgfCtxT>ctx;
