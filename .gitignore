@@ -3,10 +3,11 @@
 
 node_modules
 
-.covid_test_rc
+#hide config file for security
+.covid_test_rc 
+
 
 package-lock.json
-tsconfig.json
 dist
 *.png
 *.svg

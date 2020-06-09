@@ -74,6 +74,10 @@ export class InittializeBot implements IBot {
       ctx.scene.enter("country");
       //@ts-ignore-end
     });
+    this.bot.action("country", (ctx: TelegrafContext) => {
+      //@ts-ignore
+      ctx.scene.enter("country");
+    });
     this.help();
     this.settings();
     this.bot.launch();

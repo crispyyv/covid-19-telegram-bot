@@ -22,12 +22,6 @@ export type ConfigT = {
 abstract class AConfig {
   constructor(protected fileName: string) {}
 
-  // abstract toNumber(futureNumber: string): number;
-
-  // abstract parseDBconfig(dbConfig: InitialDBT): DBConfigT;
-
-  // abstract getConfig(): ConfigT;
-
   abstract createConfig(): ConfigT;
 }
 
