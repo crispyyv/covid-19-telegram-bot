@@ -34,7 +34,6 @@ export class Scenes {
           const currentCountryInfo = data["Countries"].filter(
             (countryInfo: IcountryData) => countryInfo.Country === countryName
           );
-          console.log(data);
           return currentCountryInfo[0];
         },
         (err) => {
@@ -47,13 +46,6 @@ export class Scenes {
       .finally(() => {
         clearTimeout(timeout);
       });
-    // const countryObj = await covidData.json();
-
-    // const currentCountryInfo = countryObj["Countries"].filter(
-    //   (countryInfo: IcountryData) => countryInfo.Country === countryName
-    // );
-    // console.log(countryObj[1]);
-    // return currentCountryInfo[0];
   }
 
   countryScene() {
@@ -74,9 +66,6 @@ export class Scenes {
         try {
           await ctx.replyWithMarkdown("_Wait please data is fetching..._");
           const info = await this.fetchData(countryName);
-          // let data = await info.json()
-
-          console.log(info);
           const { NewConfirmed, TotalConfirmed, NewDeaths, TotalDeaths } = info;
           ctx.replyWithMarkdown(
             `*${countryName} stats\n*
